@@ -69,9 +69,16 @@ def start_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(100, 300, 100, 100).collidepoint(event.pos):
                 fl = 1
                 screen.fill((255, 255, 255))
+                lvl1_button = Button("Уровень 1", 100, 100, 150, 100, "grey", "orange")
+                lvl2_button = Button("Уровень 2", 350, 100, 150, 100, "grey", "orange")
+                lvl1_button.draw(screen)
+                lvl2_button.draw(screen)
             if not fl:
                 play_button.draw(screen)
                 exit_button.draw(screen)
+            else:
+                lvl1_button.draw(screen)
+                lvl2_button.draw(screen)
         pygame.display.flip()
         clock.tick(FPS)
 
