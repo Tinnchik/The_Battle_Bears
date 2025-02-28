@@ -53,22 +53,25 @@ def terminate():
 
 
 def start_screen():
+    fl = 0
     fon = pygame.transform.scale(load_image('fon.jpg'), (600, 270))
     play_button = Button("Играть", 100, 300, 100, 100, "grey", "green")
     exit_button = Button("Выход", 400, 300, 100, 100, "grey", "red")
-    play_button.draw(screen)
-    exit_button.draw(screen)
     screen.blit(fon, (0, 0))
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            elif event.type == pygame.KEYDOWN or \
-                    event.type == pygame.MOUSEBUTTONDOWN:
-                return
-            play_button.draw(screen)
-            exit_button.draw(screen)
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(400, 300, 100, 100).collidepoint(
+                    event.pos) and not fl:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(100, 300, 100, 100).collidepoint(event.pos):
+                fl = 1
+                screen.fill((255, 255, 255))
+            if not fl:
+                play_button.draw(screen)
+                exit_button.draw(screen)
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -79,5 +82,4 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
     screen.fill((255, 255, 255))
     clock = pygame.time.Clock()
-
     start_screen()
