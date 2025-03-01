@@ -62,6 +62,10 @@ class Bear(pygame.sprite.Sprite):
     def update(self):
         self.rect.x -= 1
 
+    def attack(self):
+        self.rect.x += 10
+        self.rect.x -= 10
+
 
 def terminate():
     pygame.quit()
@@ -110,19 +114,19 @@ def start_screen():
                   1: "Выбор уровня",
                   2: "Уровень 1",
                   3: "Уровень 2", }
-    fon = pygame.transform.scale(load_image('fon.jpg'), (600, 270))
-    play_button = Button("Играть", 100, 300, 100, 100, "grey", "green")
-    exit_button = Button("Выход", 400, 300, 100, 100, "grey", "red")
+    fon = pygame.transform.scale(load_image('fon.png'), (794, 1123))
+    play_button = Button("Играть", 200, 470, 100, 100, "grey", "green")
+    exit_button = Button("Выход", 500, 470, 100, 100, "grey", "red")
     screen.blit(fon, (0, 0))
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(400, 300, 100, 100).collidepoint(
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(500, 470, 100, 100).collidepoint(
                     event.pos) and status == 0:
                 terminate()
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(100, 300, 100, 100).collidepoint(
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(200, 470, 100, 100).collidepoint(
                     event.pos) and status == 0:
                 status = 1
                 screen.fill((255, 255, 255))
@@ -152,7 +156,6 @@ if __name__ == '__main__':
     pygame.display.set_caption("TheBattleBears")
     pygame.init()
     size = width, height = 1000, 800
-    #600 500
     screen = pygame.display.set_mode(size)
     screen.fill((255, 255, 255))
     clock = pygame.time.Clock()
