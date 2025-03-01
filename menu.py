@@ -75,7 +75,8 @@ def lvl1_game():
     all_sprites = pygame.sprite.Group()
     bears = []
     enemy = []
-    buttons = [Button("Медвед", 215, 682, 100, 100, "grey", "green")]
+    buttons = [Button("", 215, 682, 100, 100, "grey", "green")]
+    bear_image = pygame.transform.scale(load_image("bear.png"), (100, 100))
     running = True
     while running:
         screen.blit(fon, (0, 0))
@@ -99,6 +100,7 @@ def lvl1_game():
                 button.hover_color = 'green'
             else:
                 button.hover_color = 'red'
+        screen.blit(bear_image, (215, 682))
         all_sprites.draw(screen)
         pygame.display.update()
 
