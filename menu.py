@@ -161,31 +161,29 @@ def start_screen():
                   1: "Выбор уровня",
                   2: "Уровень 1",
                   3: "Уровень 2", }
-    fon = pygame.transform.scale(load_image('fon.jpg'), (600, 270))
-    play_button = Button("Играть", 100, 300, 100, 100, "grey", "green")
-    exit_button = Button("Выход", 400, 300, 100, 100, "grey", "red")
-    screen.blit(fon, (0, 0))
+    fon = pygame.transform.scale(load_image('fon.png'), (794, 1200))
+    play_button = Button("Играть", 300, 500, 100, 100, "grey", "green")
+    exit_button = Button("Выход", 600, 500, 100, 100, "grey", "red")
+    screen.blit(fon, (125, 0))
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(400, 300, 100, 100).collidepoint(
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(600, 500, 100, 100).collidepoint(
                     event.pos) and status == 0:
                 terminate()
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(100, 300, 100, 100).collidepoint(
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(300, 500, 100, 100).collidepoint(
                     event.pos) and status == 0:
                 status = 1
                 screen.fill((255, 255, 255))
-                lvl1_button = Button("Уровень 1", 100, 100, 150, 100, "grey", "orange")
-                lvl2_button = Button("Уровень 2", 350, 100, 150, 100, "grey", "orange")
+                lvl1_button = Button("Уровень 1", 300, 500, 150, 100, "grey", "orange")
+                lvl2_button = Button("Уровень 2", 600, 500, 150, 100, "grey", "orange")
                 lvl1_button.draw(screen)
                 lvl2_button.draw(screen)
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(100, 100, 150, 100).collidepoint(
-                    event.pos) and status == 1:
+            elif event.type == pygame.MOUSEBUTTONDOWN and lvl1_button.rect.collidepoint(event.pos) and status == 1:
                 status = 2
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.Rect(350, 100, 150, 100).collidepoint(
-                    event.pos) and status == 1:
+            elif event.type == pygame.MOUSEBUTTONDOWN and lvl2_button.rect.collidepoint(event.pos) and status == 1:
                 status = 3
             if status == 0:
                 play_button.draw(screen)
