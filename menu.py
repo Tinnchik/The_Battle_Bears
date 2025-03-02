@@ -56,7 +56,7 @@ class Bear(pygame.sprite.Sprite):
         super().__init__(*group)
         self.image = Bear.image
         self.rect = self.image.get_rect()
-        self.rect.x = 800
+        self.rect.x = 900
         self.rect.y = 450
         self.stat = 0
         self.hp = 4
@@ -73,7 +73,7 @@ class Enemy(Bear):
     def __init__(self, *group):
         super().__init__(*group)
         self.image = pygame.transform.flip(pygame.transform.scale(load_image("enemy.png"), (100, 100)), True, False)
-        self.rect.x = 150
+        self.rect.x = 85
         self.rect.y = 450
         self.stat = 0
         self.hp = 3
@@ -98,6 +98,8 @@ def lvl1_game():
     buttons = [Button("", 215, 682, 100, 100, "grey", "green")]
     bear_image = pygame.transform.scale(load_image("bear.png"), (100, 100))
     enemy_birth = 0
+    enemy_tower_hp = 10
+    self_tower_hp = 10
     running = True
     while running:
         screen.blit(fon, (0, 0))
@@ -108,7 +110,7 @@ def lvl1_game():
                 for el in buttons:
                     if el.rect.collidepoint(event.pos) and el.stat == 0 and el.text == '':
                         bears.append(Bear(all_sprites))
-                        el.stat = 250
+                        el.stat = 300
         if enemy_birth == 0:
             enemy.append(Enemy(all_sprites))
             enemy_birth = random.randint(250, 350)
@@ -125,7 +127,7 @@ def lvl1_game():
                     el.stat -= 1
                     if el.stat == 0:
                         enemy[0].hp -= 1
-                    if enemy[0].hp == 0:
+                    if len(enemy) > 0 and enemy[0].hp == 0:
                         for t in bears:
                             t.stat = 0
                         enemy[0].image = load_image("none.png")
@@ -144,6 +146,24 @@ def lvl1_game():
                         bears = bears[1:]
             print(*bears)
             print(*enemy)
+        for el in bears:
+            if el.rect.x <= 185 and el.stat == 0:
+                el.stat = 60
+            if el.rect.x <= 185:
+                el.stat -= 1
+                if el.stat == 0:
+                    enemy_tower_hp -= 1
+        for el in enemy:
+            if el.rect.x >= 800 and el.stat == 0:
+                el.stat = 60
+            if el.rect.x >= 800:
+                el.stat -= 1
+                if el.stat == 0:
+                    self_tower_hp -= 1
+        if enemy_tower_hp == 0:
+            return
+        elif self_tower_hp == 0:
+            return
         for button in buttons:
             button.draw(screen)
             screen.blit(bear_image, (215, 682))
@@ -158,6 +178,7 @@ def lvl1_game():
 
 
 def start_screen():
+    screen.fill((255, 255, 255))
     status = 0
     game_satus = {0: "Изначальное меню",
                   1: "Выбор уровня",
@@ -187,14 +208,20 @@ def start_screen():
                 status = 2
             elif event.type == pygame.MOUSEBUTTONDOWN and lvl2_button.rect.collidepoint(event.pos) and status == 1:
                 status = 3
-            if status == 0:
-                play_button.draw(screen)
-                exit_button.draw(screen)
-            if status == 1:
-                lvl1_button.draw(screen)
-                lvl2_button.draw(screen)
-            if status == 2:
-                lvl1_game()
+        if status == 0:
+            play_button.draw(screen)
+            exit_button.draw(screen)
+        if status == 1:
+            lvl1_button.draw(screen)
+            lvl2_button.draw(screen)
+        if status == 2:
+            lvl1_game()
+            status = 0
+            screen.fill((255, 255, 255))
+            fon = pygame.transform.scale(load_image('fon.png'), (794, 1200))
+            play_button = Button("Играть", 300, 500, 100, 100, "grey", "green")
+            exit_button = Button("Выход", 600, 500, 100, 100, "grey", "red")
+            screen.blit(fon, (125, 0))
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -203,7 +230,6 @@ if __name__ == '__main__':
     pygame.display.set_caption("TheBattleBears")
     pygame.init()
     size = width, height = 1000, 800
-    # 600 500
     screen = pygame.display.set_mode(size)
     screen.fill((255, 255, 255))
     clock = pygame.time.Clock()
