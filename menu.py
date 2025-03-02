@@ -223,15 +223,15 @@ def lvl2_game():
                 for el in buttons:
                     if el.rect.collidepoint(event.pos) and el.stat == 0 and el.text == '1':
                         bears.append(Bear(all_sprites))
-                        el.stat = 300
+                        el.stat = 350
                     elif el.rect.collidepoint(event.pos) and el.stat == 0 and el.text == '2':
                         bears.append(BigBear(all_sprites))
-                        el.stat = 400
+                        el.stat = 500
                     elif el.rect.collidepoint(event.pos) and el.text == "X":
                         start_screen()
         if enemy_birth == 0 and enemy_type < 3:
             enemy.append(Enemy(all_sprites))
-            enemy_birth = random.randint(150, 250)
+            enemy_birth = random.randint(250, 350)
             enemy_type = random.randint(1, 3)
         elif enemy_birth == 0 and enemy_type == 3:
             enemy.append(BigEnemy(all_sprites))
