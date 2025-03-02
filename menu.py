@@ -57,10 +57,29 @@ class Bear(pygame.sprite.Sprite):
         self.image = Bear.image
         self.rect = self.image.get_rect()
         self.rect.x = 800
-        self.rect.y = 500
+        self.rect.y = 450
+        self.stat = 0
+        self.hp = 4
 
     def update(self):
-        self.rect.x -= 1
+        if self.stat == 0:
+            self.rect.x -= 1
+
+    def __str__(self):
+        return str(self.stat) + " " + str(self.hp)
+
+class Enemy(Bear):
+    def __init__(self, *group):
+        super().__init__(*group)
+        self.image = pygame.transform.flip(pygame.transform.scale(load_image("enemy.png"), (100, 100)), True, False)
+        self.rect.x = 150
+        self.rect.y = 450
+        self.stat = 0
+        self.hp = 3
+
+    def update(self):
+        if self.stat == 0:
+            self.rect.x += 1
 
 
 def terminate():
@@ -75,8 +94,10 @@ def lvl1_game():
     all_sprites = pygame.sprite.Group()
     bears = []
     enemy = []
-    buttons = [Button("", 215, 682, 100, 100, "grey", "green")]
+    buttons = [Button("", 215, 682, 100, 100, "grey", "green"),
+               Button("ENEMY!!!", 0, 0, 100, 100, "grey", "green")]
     bear_image = pygame.transform.scale(load_image("bear.png"), (100, 100))
+
     running = True
     while running:
         screen.blit(fon, (0, 0))
@@ -85,24 +106,54 @@ def lvl1_game():
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for el in buttons:
-                    if el.rect.collidepoint(event.pos) and el.stat == 0:
+                    if el.rect.collidepoint(event.pos) and el.stat == 0 and el.text == '':
                         bears.append(Bear(all_sprites))
                         el.stat = 250
+                    elif el.rect.collidepoint(event.pos) and el.text == 'ENEMY!!!':
+                        enemy.append(Enemy(all_sprites))
         for el in bears:
             el.update()
         for el in enemy:
             el.update()
+        if len(bears) > 0 and len(enemy) > 0 and bears[0].rect.x <= enemy[0].rect.x + 100:
+            for el in bears:
+                if el.rect.x == bears[0].rect.x and el.stat == 0:
+                    el.stat = 60
+                if el.rect.x == bears[0].rect.x:
+                    el.stat -= 1
+                    if el.stat == 0:
+                        enemy[0].hp -= 1
+                    if enemy[0].hp == 0:
+                        for t in bears:
+                            t.stat = 0
+                        enemy[0].image = load_image("none.png")
+                        enemy = enemy[1:]
+            for el in enemy:
+                if el.rect.x == enemy[0].rect.x and el.stat == 0:
+                    el.stat = 60
+                if el.rect.x == enemy[0].rect.x:
+                    el.stat -= 1
+                    if el.stat == 0:
+                        bears[0].hp -= 1
+                    if bears[0].hp == 0:
+                        for t in enemy:
+                            t.stat = 0
+                        bears[0].image = load_image("none.png")
+                        bears = bears[1:]
+            print(*bears)
+            print(*enemy)
         for button in buttons:
             button.draw(screen)
+            screen.blit(bear_image, (215, 682))
             if button.stat != 0:
                 button.stat -= 1
             if button.stat == 0:
                 button.hover_color = 'green'
             else:
                 button.hover_color = 'red'
-        screen.blit(bear_image, (215, 682))
         all_sprites.draw(screen)
         pygame.display.update()
+
 
 def start_screen():
     status = 0
@@ -152,7 +203,7 @@ if __name__ == '__main__':
     pygame.display.set_caption("TheBattleBears")
     pygame.init()
     size = width, height = 1000, 800
-    #600 500
+    # 600 500
     screen = pygame.display.set_mode(size)
     screen.fill((255, 255, 255))
     clock = pygame.time.Clock()
