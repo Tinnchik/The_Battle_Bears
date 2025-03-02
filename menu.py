@@ -1,7 +1,7 @@
 import os
-import sys
-
 import pygame
+import random
+import sys
 
 
 def load_image(name, colorkey=None):
@@ -68,6 +68,7 @@ class Bear(pygame.sprite.Sprite):
     def __str__(self):
         return str(self.stat) + " " + str(self.hp)
 
+
 class Enemy(Bear):
     def __init__(self, *group):
         super().__init__(*group)
@@ -94,10 +95,9 @@ def lvl1_game():
     all_sprites = pygame.sprite.Group()
     bears = []
     enemy = []
-    buttons = [Button("", 215, 682, 100, 100, "grey", "green"),
-               Button("ENEMY!!!", 0, 0, 100, 100, "grey", "green")]
+    buttons = [Button("", 215, 682, 100, 100, "grey", "green")]
     bear_image = pygame.transform.scale(load_image("bear.png"), (100, 100))
-
+    enemy_birth = 0
     running = True
     while running:
         screen.blit(fon, (0, 0))
@@ -109,8 +109,10 @@ def lvl1_game():
                     if el.rect.collidepoint(event.pos) and el.stat == 0 and el.text == '':
                         bears.append(Bear(all_sprites))
                         el.stat = 250
-                    elif el.rect.collidepoint(event.pos) and el.text == 'ENEMY!!!':
-                        enemy.append(Enemy(all_sprites))
+        if enemy_birth == 0:
+            enemy.append(Enemy(all_sprites))
+            enemy_birth = random.randint(250, 350)
+        enemy_birth -= 1
         for el in bears:
             el.update()
         for el in enemy:
@@ -135,7 +137,7 @@ def lvl1_game():
                     el.stat -= 1
                     if el.stat == 0:
                         bears[0].hp -= 1
-                    if bears[0].hp == 0:
+                    if len(bears) > 0 and bears[0].hp == 0:
                         for t in enemy:
                             t.stat = 0
                         bears[0].image = load_image("none.png")
